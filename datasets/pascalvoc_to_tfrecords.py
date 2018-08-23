@@ -59,8 +59,8 @@ from datasets.dataset_utils import int64_feature, float_feature, bytes_feature
 from datasets.pascalvoc_common import VOC_LABELS
 
 # Original dataset organisation.
-DIRECTORY_ANNOTATIONS = 'Annotations/'
-DIRECTORY_IMAGES = 'JPEGImages/'
+DIRECTORY_ANNOTATIONS = 'Annotations'
+DIRECTORY_IMAGES = 'JPEGImages'
 
 # TFRecords convertion parameters.
 RANDOM_SEED = 4242
@@ -79,8 +79,8 @@ def _process_image(directory, name):
       width: integer, image width in pixels.
     """
     # Read the image file.
-    filename = directory + DIRECTORY_IMAGES + name + '.jpg'
-    image_data = tf.gfile.FastGFile(filename, 'r').read()
+    filename = os.path.join(directory,DIRECTORY_IMAGES,name + '.jpg')
+    image_data = tf.gfile.FastGFile(filename, 'rb').read()
 
     # Read the XML annotation file.
     filename = os.path.join(directory, DIRECTORY_ANNOTATIONS, name + '.xml')
@@ -181,7 +181,10 @@ def _add_to_tfrecord(dataset_dir, name, tfrecord_writer):
 
 
 def _get_output_filename(output_dir, name, idx):
-    return '%s/%s_%03d.tfrecord' % (output_dir, name, idx)
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    file_name = '%s_%03d.tfrecord' % (name, idx)
+    return os.path.join(output_dir,file_name)
 
 
 def run(dataset_dir, output_dir, name='voc_train', shuffling=False):
