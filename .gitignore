@@ -18,6 +18,7 @@ checkpoints/model.ckpt-*
 logs/
 *.log
 nohup.out
+VOC2007/
 
 ssd-tensorflow.sublime-workspace
 ssd-tensorflow.sublime-project
