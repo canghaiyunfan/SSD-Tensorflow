@@ -69,6 +69,7 @@ def get_split(split_name, dataset_dir, file_pattern=None, reader=None):
   if not reader:
     reader = tf.TFRecordReader
 
+  # 将example反序列化成存储之前的格式。由tf完成
   keys_to_features = {
       'image/encoded': tf.FixedLenFeature((), tf.string, default_value=''),
       'image/format': tf.FixedLenFeature((), tf.string, default_value='png'),
@@ -76,11 +77,13 @@ def get_split(split_name, dataset_dir, file_pattern=None, reader=None):
           [], tf.int64, default_value=tf.zeros([], dtype=tf.int64)),
   }
 
+  # 将反序列化的数据组装成更高级的格式。由slim完成
   items_to_handlers = {
       'image': slim.tfexample_decoder.Image(shape=[32, 32, 3]),
       'label': slim.tfexample_decoder.Tensor('image/class/label'),
   }
 
+  # 解码器，进行解码
   decoder = slim.tfexample_decoder.TFExampleDecoder(
       keys_to_features, items_to_handlers)
 
@@ -88,6 +91,7 @@ def get_split(split_name, dataset_dir, file_pattern=None, reader=None):
   if dataset_utils.has_labels(dataset_dir):
     labels_to_names = dataset_utils.read_label_file(dataset_dir)
 
+  # dataset对象定义了数据集的文件位置，解码方式等元信息
   return slim.dataset.Dataset(
       data_sources=file_pattern,
       reader=reader,
@@ -95,4 +99,4 @@ def get_split(split_name, dataset_dir, file_pattern=None, reader=None):
       num_samples=SPLITS_TO_SIZES[split_name],
       items_to_descriptions=_ITEMS_TO_DESCRIPTIONS,
       num_classes=_NUM_CLASSES,
-      labels_to_names=labels_to_names)
+      labels_to_names=labels_to_names)#字典形式，格式为：id:class_call

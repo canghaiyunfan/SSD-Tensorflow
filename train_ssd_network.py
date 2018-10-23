@@ -222,12 +222,14 @@ def main(_):
         # =================================================================== #
         with tf.device(deploy_config.inputs_device()):
             with tf.name_scope(FLAGS.dataset_name + '_data_provider'):
+                #provider对象根据dataset信息读取数据
                 provider = slim.dataset_data_provider.DatasetDataProvider(
                     dataset,
                     num_readers=FLAGS.num_readers,
                     common_queue_capacity=20 * FLAGS.batch_size,
                     common_queue_min=10 * FLAGS.batch_size,
                     shuffle=True)
+            # 获取数据，获取到的数据是单个数据，还需要对数据进行预处理，组合数据
             # Get for SSD network: image, labels, bboxes.
             [image, shape, glabels, gbboxes] = provider.get(['image', 'shape',
                                                              'object/label',
