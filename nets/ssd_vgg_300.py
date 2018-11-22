@@ -92,19 +92,19 @@ class SSDNet(object):
     The default image size used to train this network is 300x300.
     """
     default_params = SSDParams(
-        img_shape=(300, 300),
-        num_classes=21,
+        img_shape=(300, 300),  #输入图片大小
+        num_classes=21,       # 类别数+背景
         no_annotation_label=21,
-        feat_layers=['block4', 'block7', 'block8', 'block9', 'block10', 'block11'],
-        feat_shapes=[(38, 38), (19, 19), (10, 10), (5, 5), (3, 3), (1, 1)],
-        anchor_size_bounds=[0.15, 0.90],
+        feat_layers=['block4', 'block7', 'block8', 'block9', 'block10', 'block11'],   # 要进行检测的特征图name
+        feat_shapes=[(38, 38), (19, 19), (10, 10), (5, 5), (3, 3), (1, 1)],     # 特征图大小
+        anchor_size_bounds=[0.15, 0.90],    # 特征图尺度范围
         # anchor_size_bounds=[0.20, 0.90],
         anchor_sizes=[(21., 45.),
                       (45., 99.),
                       (99., 153.),
                       (153., 207.),
                       (207., 261.),
-                      (261., 315.)],
+                      (261., 315.)],   # 不同特征图的先验框尺度（第一个值是s_k，第2个值是s_k+1）
         # anchor_sizes=[(30., 60.),
         #               (60., 111.),
         #               (111., 162.),
@@ -116,11 +116,11 @@ class SSDNet(object):
                        [2, .5, 3, 1./3],
                        [2, .5, 3, 1./3],
                        [2, .5],
-                       [2, .5]],
-        anchor_steps=[8, 16, 32, 64, 100, 300],
-        anchor_offset=0.5,
-        normalizations=[20, -1, -1, -1, -1, -1],
-        prior_scaling=[0.1, 0.1, 0.2, 0.2]
+                       [2, .5]],   # 特征图先验框所采用的长宽比（每个特征图都有2个正方形先验框）
+        anchor_steps=[8, 16, 32, 64, 100, 300],   # 特征图的单元大小
+        anchor_offset=0.5,        # 偏移值，确定先验框中心
+        normalizations=[20, -1, -1, -1, -1, -1],    # l2 norm
+        prior_scaling=[0.1, 0.1, 0.2, 0.2]           # variance
         )
 
     def __init__(self, params=None):
